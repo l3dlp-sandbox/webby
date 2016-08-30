@@ -1,0 +1,56 @@
+{
+  "name": "webby",
+  "version": "0.0.8",
+  "license": "ISC",
+  "author": {
+    "name": "Nickolay Kovalev",
+    "url": "http://nickola.ru"
+  },
+  "homepage": "https://github.com/nickola/webby",
+
+  "description": "Easy and powerful front-end (static HTML/CSS/JS) builder. Webpack based, supported: SASS, LESS, Stylus, CoffeeScript, TypeScript, Babel (ES5, ES6, Stage 0), Pug (Jade), etc.",
+  "keywords": [
+    "webby", "front-end", "frontend", "static", "builder", "generator", "webpack", "html", "css", "js", "javascript",
+    "sass", "less", "stylus", "coffeescript", "typescript", "babel", "es5", "es6", "pug", "jade"
+  ],
+
+  "main": "src/index.js",
+  "files": ["src"],
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nickola/webby.git"
+  },
+
+  "dependencies": {
+    "webpack": "^1.13.2",
+    "extract-text-webpack-plugin": "^1.0.1",
+
+    "raw-loader": "^0.5.1",
+    "url-loader": "^0.5.7",
+    "file-loader": "^0.9.0",
+    "json-loader": "^0.5.4",
+
+    "html-loader": "^0.4.3",
+    "pug-html-loader": "^1.0.8",
+    "pug": "^2.0.0-beta6",
+
+    "css-loader": "^0.24.0",
+    "postcss-loader": "^0.11.0",
+    "stylus-loader": "^2.3.1",
+    "stylus": "^0.54.5",
+    "sass-loader": "^4.0.0",
+    "node-sass": "^3.8.0",
+    "less-loader": "^2.2.3",
+    "less": "^2.7.1",
+
+    "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.10.0",
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10",
+
+    "babel-loader": "^6.2.5",
+    "babel-preset-latest": "^6.14.0",
+    "babel-register": "^6.14.0"
+  }
+}
