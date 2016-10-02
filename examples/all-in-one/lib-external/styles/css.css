@@ -1,0 +1,8 @@
+.css-external {
+  background: url(images/image.png) no-repeat 50% 15px;
+}
+
+.css-external:after {
+  content: " (External Library)";
+}
+

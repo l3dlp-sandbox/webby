@@ -1,0 +1,9 @@
+/* Import "lib-external/styles/css.css" */
+@import '~styles/css.css';
+
+/* Import "src/lib-internal/styles/css.css" */
+@import 'lib-internal/styles/css.css';
+
+.css:before {
+  content: "Loaded: Styles / CSS";
+}

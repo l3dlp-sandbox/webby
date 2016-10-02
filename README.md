@@ -4,9 +4,10 @@
 
 # About
 
- - Webby is a [Webpack](https://webpack.github.io) based, front-end (static HTML/CSS/JS) builder.
+ - Webby is a [Webpack](https://webpack.github.io) based front-end (static HTML/CSS/JS) builder
+   and [Express](http://expressjs.com) based web server (back-end).
  - Supported: SASS, LESS, Stylus, CoffeeScript, TypeScript, Babel (ES5, ES6, Stage 0), Pug (Jade), etc.
- - Low barriers of entry, zero configuration, new project can be started in few seconds.
+ - Zero-configuration, low barriers of entry.
 
 If you like Webby, please consider an opportunity to support it on [Patreon](https://www.patreon.com/nickola).
 
@@ -14,55 +15,40 @@ If you like Webby, please consider an opportunity to support it on [Patreon](htt
 
 In `examples` directory you can find common use cases of Webby.
 Source code of example projects is located in `src` directory, builded results are located in `build` directory.
-The following examples are available:
+See `Makefile` for more details about Webby execution. The following examples are available:
 
- - `coffeescript-sass-html_default`: CoffeeScript + SASS -> JS + CSS + HTML (default)
- - `babel_es6-stylus-html_default`: JavaScript (Babel ES6) + Stylus -> JS + CSS + HTML (default)
- - `typescript-less-html`: TypeScript + LESS + HTML -> JS + CSS + HTML
- - `javascript-css-pug`: JavaScript + CSS + Pug (Jade) -> JS + CSS + HTML
- - `sass_import-html_default_variables`: SASS (with external import) -> CSS + HTML (default with variables)
+ - `all-in-one`: All supported -> JavaScript + CSS + HTML
+ - `import-stylus`: Stylus (with external imports) -> CSS
+ - `import-sass`: SASS (with external imports) -> CSS
+ - `import-less`: LESS (with external imports) -> CSS
 
 # Usage
 
- - Start new `Node.js` project with `npm` and `package.json` like that:
+ - Install `Webby` using `npm` (we assume you have pre-installed `Node.js`):
 
-```javascript
-{
-  "private": true,
-  "scripts": {
-    "build": "webpack",
-    "watch": "webpack --progress --watch"
-  },
-  "devDependencies": {
-    "webby": "^0.0.8"
-  }
-}
+```
+npm install webby -g
 ```
 
- - Run `npm install` to install Webby with all dependencies.
+ - Create new directory, and go into it:
 
- - Create file `webpack.config.js` with content like that:
-
-```javascript
-var webby = require('webby');
-module.exports = webby().webpack();
+```
+mkdir project && cd project
 ```
 
- - Create directory `src`.
-
- - Create file `src/index.js` with content like that:
+ - Create file `index.js` (JavaScript) with content like that:
 
 ```javascript
 document.addEventListener('DOMContentLoaded', function() {
   var div = document.createElement('div');
   div.className = 'example';
-  div.innerHTML = 'Webby Example';
+  div.innerHTML = 'Example';
 
   document.body.appendChild(div);
 });
 ```
 
-- Create file `src/index.sass` with content like that:
+ - Create file `index.sass` (SASS) with content like that:
 
 ```sass
 .example
@@ -70,66 +56,90 @@ document.addEventListener('DOMContentLoaded', function() {
   font-weight: bold
 ```
 
- - Create any other files with names like `src/index.<supported extension>` (it will be builded by Webby).
+ - Create file `index.pug` (Pug / Jade)  with content like that:
 
- - Run `npm run build`, your project will be builded into directory `build`, see build results there.
+```jade
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Example
+    link(rel="stylesheet", href="index.css")
+    script(src="index.js")
+  body
+```
 
- - Run `npm run watch`, build will be started in `watch` mode.
+ - Create any other files with supported extensions, it will be automatically builded by Webby
+   (see below list of supported languages and file extensions).
+
+ - Run `webby build`, your project will be builded into `build` directory, see build results there.
+
+ - Run `webby build --watch`, build will be started in `watch` mode.
+
+ - You can also start Webby server with builded results, run: `webby server --home build`
 
 # Options
 
-You can pass options to Webby when it is called from `webpack.config.js` file, like that:
-```javascript
-var webby = require('webby');
+To see list of supported options, run: `webby --help`
 
-module.exports = webby({
-  destination: './dist'
-}).webpack();
+For now, following options are supported:
+
 ```
+Usage: webby <command> [options]
 
-The following options are supported:
-  - `target`: source file name (by default - `index`)
-  - `source`: source directory  (by default - `./src`)
-  - `destination`: destination directory (by default - `./build`)
-  - `html_template`: default HTML (Pug / Jade) template file (by default - internal `templates/index.pug`)
-  - `weaken`: do not optimize / minimize builded files (by default - `false`)
+Commands:
+  build [source] [destination]  Build project
+  server [home]                 Run server
 
-Also, you can pass variables to default HTML template when it is used, like that:
-```javascript
-var webby = require('webby');
+Build options:
+  --source                   Source directory            [string] [default: "."]
+  --destination              Destination directory [string] [default: "./build"]
+  --watch                    Enable "watch" mode      [boolean] [default: false]
+  --weaken                   Disable minimization     [boolean] [default: false]
+  --exclude                  Exclude files   [array] [default: ["package.json"]]
+  --server                   Enable "server" mode (as package)
+                                                      [boolean] [default: false]
+  --server-destination       Site destination directory for "server" mode
+                                                      [string] [default: "site"]
+  --server-default           Default site for "server" mode             [string]
+  --server-port              Port number for "server" mode
+                                                        [number] [default: 8000]
+  --server-domain-aliases    Enable domain aliases for "server" mode
+                                                      [boolean] [default: false]
+  --multiple                 Enable "multiple" mode   [boolean] [default: false]
+  --target                   Target for "multiple" mode                 [string]
+  --paths                    Base paths                                  [array]
+  --js-paths                 JavaScript paths                            [array]
+  --pug-paths, --jade-paths  Pug (Jade) paths                            [array]
+  --less-paths               LESS paths                                  [array]
+  --sass-paths               SASS paths                                  [array]
+  --stylus-paths             Stylus paths                                [array]
 
-module.exports = webby({
-  variables: {
-    meta: {
-      description: 'Description'
-    }
-  }
-}).webpack();
-```
+Server options:
+  --home                     Home directory              [string] [default: "."]
+  --port                     Port number                [number] [default: 8000]
+  --index                    Index files       [array] [default: ["index.html"]]
+  --exclude                  Exclude files                               [array]
+  --always-home              Enable "always home" mode[boolean] [default: false]
+  --always-home-exclude      Exclude files for "always home" mode
+                                              [array] [default: ["favicon.ico"]]
+  --multiple                 Enable "multiple" mode   [boolean] [default: false]
+  --multiple-domain-aliases  Enable domain based site aliases for "multiple"
+                             mode                     [boolean] [default: false]
+  --default                  Default site for "multiple" mode
+                                                   [string] [default: "default"]
+  --server-file              Internal server routing file
+                                                [string] [default: "_server.js"]
 
-The following default HTML template variables are supported:
-  - `title`: page title (by default - empty)
-  - `meta.charset`: page meta charset (by default - `utf-8`)
-  - `meta.description`: page meta description (by default - empty)
-
-And also, you can pass options to Webpack, like that:
-```javascript
-var path = require('path');
-var webby = require('webby');
-
-module.exports = webby().webpack({
-  sassLoader: {
-    includePaths: [
-      path.join(__dirname, 'src-lib')
-    ]
-  }
-});
+Other options:
+  --help, -h     Show help                                             [boolean]
+  --version, -v  Show version number                                   [boolean]
 ```
 
 # Supported languages and file extensions
 
-Just add any file with name like `index.<supported extension>` (for example: `index.js`, `index.sass`) into `src` directory
-and it will be automatically builded by Webby. In that files you can include any other files.
+Just add file with any name and supported extension (for example: `index.js`, `base.sass`) into
+project directory and it will be automatically builded by Webby. In that files you can include any other files.
 Folowing languages and file extensions are supported:
 
  - JavaScript (Babel: ES5, ES6, Stage 0): `js`, `jsx`
@@ -150,10 +160,10 @@ Also, various third-party components are used.
 
 # URLs
 
-  - NPM: https://www.npmjs.com/package/webby
-  - GitHub: https://github.com/nickola/webby
-  - Patreon: https://www.patreon.com/nickola
-  - Author: http://nickola.ru
+ - NPM: https://www.npmjs.com/package/webby
+ - GitHub: https://github.com/nickola/webby
+ - Patreon: https://www.patreon.com/nickola
+ - Author: http://nickola.ru
 
 # License
 

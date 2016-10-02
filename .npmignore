@@ -1,3 +1,4 @@
 .gitignore
 examples
 Makefile
+*.todo

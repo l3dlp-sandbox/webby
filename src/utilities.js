@@ -1,31 +1,70 @@
 'use strict';
 
-var utilities = {};
+var fs = require('fs');
+
+// Utilities
+var utilities = module.exports = {};
+
+utilities.isDirectory = function(path) {
+  try { return fs.lstatSync(path).isDirectory(); }
+  catch (error) { return false; }
+};
+
+utilities.isFile = function(path) {
+  try { return fs.lstatSync(path).isFile(); }
+  catch (error) { return false; }
+};
+
+utilities.inArray = function(data, item) {
+  return data.indexOf(item) >= 0;
+};
 
 utilities.copyArray = function(source) {
-    return [].slice.call(source, 0);
+  return Array.prototype.slice.call(source);
 };
 
 utilities.mergeObjects = function() {
-    var destination = null;
+  var destination = null;
 
-    utilities.copyArray(arguments).forEach(function(source) {
-        if (destination === null) destination = source || {};
-        else if (source) {
-            for (var item in source) {
-                var found = item in destination;
+  utilities.copyArray(arguments).forEach(function(source) {
+    if (destination === null) destination = source || {};
+    else if (typeof source === 'object' && (source !== null)) {
+      if (Array.isArray(destination)) {
+        source.forEach(function(element) {
+          if (!utilities.inArray(destination, element)) destination.push(element);
+        }, this);
+      }
+      else {
+        for (var item in source) {
+          var found = item in destination;
 
-                if (found && Array.isArray(destination[item]))
-                    destination[item] = destination[item].concat(source[item]);
-                else if (found && typeof destination[item] === 'object')
-                    destination[item] = utilities.mergeObjects(destination[item], source[item]);
-                else
-                    destination[item] = source[item];
-            }
+          if (found) {
+            var destinationItem = destination[item];
+            if (typeof destinationItem === 'object') utilities.mergeObjects(destinationItem, source[item]);
+            else found = false;
+          }
+
+          if (!found) destination[item] = source[item];
         }
-    });
+      }
+    }
+  }, this);
 
-    return destination;
+  return destination || {};
 };
 
-module.exports = utilities;
+utilities.getItem = function(data, item) {
+  var result = data;
+
+  if (result && item) {
+    var parts = item.split('.');
+
+    for (var index in parts) {
+      var part = parts[index];
+      result = result[part];
+      if (typeof result === 'undefined') break;
+    }
+  }
+
+  return result;
+};

@@ -1,0 +1,7 @@
+.css-internal {
+  background: url(images/image.png) no-repeat 50% 15px;
+}
+
+.css-internal:after {
+  content: " (Internal Library)";
+}
